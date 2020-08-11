@@ -1,0 +1,21 @@
+#!/bin/bash
+
+dnf update -y
+dnf install -y wget
+useradd --no-create-home -s /bin/false prometheus
+mkdir /etc/prometheus
+mkdir /var/lib/prometheus
+chown prometheus:prometheus /etc/prometheus
+chown prometheus:prometheus /var/lib/prometheus
+cd /tmp
+wget https://github.com/prometheus/prometheus/releases/download/v2.20.1/prometheus-2.20.1.linux-amd64.tar.gz
+tar xvzf prometheus-2.20.1.linux-amd64.tar.gz
+mv prometheus-2.20.1.linux-amd64/* /var/lib/prometheus/
+chown -R prometheus:prometheus /var/lib/prometheus
+mv /var/lib/prometheus/prometheus.yml /etc/prometheus/
+ln -s /var/lib/prometheus/prometheus /usr/local/bin/prometheus
+cd /usr/lib/systemd/system/
+wget https://raw.githubusercontent.com/QuarzBoy/Prometheus/master/prometheus.service
+systemctl enable --now prometheus.service
+firewall-cmd --permanent --add-port=9090/tcp
+firewall-cmd --reload
