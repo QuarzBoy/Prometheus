@@ -2,6 +2,9 @@
 
 dnf update -y
 dnf install -y wget
+cd /etc/selinux/
+rm -f ./config
+wget https://raw.githubusercontent.com/QuarzBoy/Prometheus/master/config
 useradd --no-create-home -s /bin/false prometheus
 mkdir /etc/prometheus
 mkdir /var/lib/prometheus
@@ -19,3 +22,4 @@ wget https://raw.githubusercontent.com/QuarzBoy/Prometheus/master/prometheus.ser
 systemctl enable --now prometheus.service
 firewall-cmd --permanent --add-port=9090/tcp
 firewall-cmd --reload
+reboot
